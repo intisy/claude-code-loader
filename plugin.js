@@ -104,4 +104,5 @@ export async function activate() {
   } catch (e) {
     console.error("[Claude Hub] Failed to initialize:", e);
   }
+  return {};
 }
