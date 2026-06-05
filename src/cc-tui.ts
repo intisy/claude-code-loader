@@ -119,7 +119,7 @@ function ensureCmdWrapper() {
   }
 
   // The actual source file in the repository we want to execute
-  const repoJsPath = join(HOME, ".claude", "repos", "intisy", "claude-hub", "bin", "cc.js");
+  const repoJsPath = join(HOME, ".claude", "repos", "intisy", "claude-loader", "bin", "cc.js");
 
   if (process.platform === "win32") {
     const cmdPath = join(binDir, "cc.cmd");
@@ -247,7 +247,7 @@ function installPlugins() {
   }
 
   // 1. Ensure core hub is present
-  const hub = "intisy/claude-hub";
+  const hub = "intisy/claude-loader";
   const hubDir = join(REPOS_DIR, ...hub.split("/"));
   if (!existsSync(hubDir)) {
     console.log(`[\x1b[36mcc\x1b[0m] Installing core: ${hub}...`);
@@ -288,11 +288,11 @@ function installPlugins() {
 // 1. Install missing plugins
 installPlugins();
 
-// 2. Setup Env Variables (hub proxy will override ANTHROPIC_BASE_URL after startup)
+// 2. Setup Env Variables (launcher proxy will override ANTHROPIC_BASE_URL after startup)
 setupEnv();
 
-// 3a. Start the hub proxy (thin reverse proxy that routes to plugin backends)
-async function startHubProxy() {
+// 3a. Start the launcher proxy (thin reverse proxy that routes to plugin backends)
+async function startLauncherProxy() {
   const hubProxyScript = join(dirname(fileURLToPath(import.meta.url)), "core", "hub-proxy.js");
   if (!existsSync(hubProxyScript)) return;
 
@@ -344,7 +344,7 @@ async function startHubProxy() {
     }
   }
 }
-await startHubProxy();
+await startLauncherProxy();
 
 // 3b. Start any plugin daemons declared via claudeHub.daemon
 async function startPluginDaemons() {
@@ -603,7 +603,7 @@ function ensureCmdWrapper() {
   }
 
   // The actual source file in the repository we want to execute
-  const repoJsPath = join(HOME, ".claude", "repos", "intisy", "claude-hub", "bin", "cc.js");
+  const repoJsPath = join(HOME, ".claude", "repos", "intisy", "claude-loader", "bin", "cc.js");
 
   if (process.platform === "win32") {
     const cmdPath = join(binDir, "cc.cmd");
@@ -731,7 +731,7 @@ function installPlugins() {
   }
 
   // 1. Ensure core hub is present
-  const hub = "intisy/claude-hub";
+  const hub = "intisy/claude-loader";
   const hubDir = join(REPOS_DIR, ...hub.split("/"));
   if (!existsSync(hubDir)) {
     console.log(`[\x1b[36mcc\x1b[0m] Installing core: ${hub}...`);
@@ -772,11 +772,11 @@ function installPlugins() {
 // 1. Install missing plugins
 installPlugins();
 
-// 2. Setup Env Variables (hub proxy will override ANTHROPIC_BASE_URL after startup)
+// 2. Setup Env Variables (launcher proxy will override ANTHROPIC_BASE_URL after startup)
 setupEnv();
 
-// 3a. Start the hub proxy (thin reverse proxy that routes to plugin backends)
-async function startHubProxy() {
+// 3a. Start the launcher proxy (thin reverse proxy that routes to plugin backends)
+async function startLauncherProxy() {
   const hubProxyScript = join(dirname(fileURLToPath(import.meta.url)), "core", "hub-proxy.js");
   if (!existsSync(hubProxyScript)) return;
 
@@ -828,7 +828,7 @@ async function startHubProxy() {
     }
   }
 }
-await startHubProxy();
+await startLauncherProxy();
 
 // 3b. Start any plugin daemons declared via claudeHub.daemon
 async function startPluginDaemons() {
@@ -980,7 +980,7 @@ if (firstArg === "model") {
       req.on("timeout", () => { req.destroy(); reject(new Error("timeout")); });
     });
   } catch (e) {
-    console.log("[\x1b[31mcc\x1b[0m] Hub proxy is not running. Start it with `cc` first.");
+    console.log("[\\x1b[31mcc\\x1b[0m] Launcher proxy is not running. Start it with `cc` first.");
     process.exit(1);
   }
 
@@ -1053,8 +1053,8 @@ try {
         updater.earlyLaunch(configDir);
       }
 
-      // Update claude-hub
-      updater.updatePlugin("claude-hub", "https://github.com/intisy/claude-hub.git");
+      // Update claude-loader
+      updater.updatePlugin("claude-loader", "https://github.com/intisy/claude-loader.git");
       
       // Update plugins from plugins.json
       const pluginsJsonPath = join(configDir, "config", "plugins.json");
