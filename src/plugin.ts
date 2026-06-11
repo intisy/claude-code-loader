@@ -81,7 +81,14 @@ function installCcWrapper(configDir: string) {
 
   if (process.platform === "win32") {
     const cmdPath = join(binDir, "cc.cmd");
-    const cmdLines = ["@echo off", "setlocal"];
+    const cmdLines = [
+      "@echo off",
+      "setlocal",
+      'set "HUB_CONFIG_DIR=%USERPROFILE%\\.claude"',
+      "set HUB_APP_NAME=Claude Code",
+      "set HUB_CLI_CMD=claude",
+      "set HUB_NPM_PKG=@anthropic-ai/claude-code",
+    ];
     for (const candidate of tuiCandidates) {
       cmdLines.push(`if exist "${candidate}" ( bun run "${candidate}" %* & exit /b %errorlevel% )`);
     }
@@ -93,6 +100,10 @@ function installCcWrapper(configDir: string) {
     const lines = [
       "#!/usr/bin/env bash",
       'export PATH="$HOME/.bun/bin:$PATH"',
+      'export HUB_CONFIG_DIR="$HOME/.claude"',
+      'export HUB_APP_NAME="Claude Code"',
+      'export HUB_CLI_CMD="claude"',
+      'export HUB_NPM_PKG="@anthropic-ai/claude-code"',
       'TUI=""',
       "for candidate in \\",
       ...tuiCandidates.map((candidate, index) =>
